@@ -1,16 +1,18 @@
-#!/bin/bash
 
- grep -o 'http[^"]*' .w3m/bookmark.html > /tmp/bookmarks
- cat .w3m/history >> /tmp/bookmarks
-
-
- LAUNCHER='dmenu -p Bookmarks:'
- BROWSER='sakura -e w3m'
- BOOKMARKS="/tmp/bookmarks"
-
- url=`cat $BOOKMARKS | $LAUNCHER | awk -F '|' '{printf("%s ", $NF)}' | tr -d '\r\n'`
-
- if [ ${#url} -gt 0 ]
- then
- $BROWSER $url
- fi
+#!/bin/bash                                                                                                                 
+                                                                                                                            
+    grep -o 'http[^"]*' .w3m/bookmark.html > /tmp/bookmarks                                                                 
+    grep -o 'http[^"]*' .w3m/history >> /tmp/bookmarks                                                                      
+                                                                                                                            
+    cat /tmp/bookmarks | dmenu -location 6 -lines 10 -width 100 -p 'W3M:' > /tmp/x                                          
+                                                                                                                            
+    check=$(wc -l < /tmp/x)                                                                                                 
+    (( check == 0)) && exit                                                                                                 
+                                                                                                                            
+    grep -o http /tmp/x && sakura -e w3m $(< /tmp/x) && exit                                                                
+    grep -o "www\." /tmp/x && sakura -e w3m $(< /tmp/x) && exit                                                             
+    grep -o "\.com" /tmp/x && sakura -e w3m $(< /tmp/x) && exit                                                             
+    grep -o "\.in" /tmp/x && sakura -e w3m $(< /tmp/x) && exit                                                              
+    grep -o "\.org" /tmp/x && sakura -e w3m $(< /tmp/x) && exit                                                             
+                                                                                                                            
+    sakura -e w3d $(< /tmp/x)
