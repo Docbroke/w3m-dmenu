@@ -1,0 +1,4 @@
+#!/bin/bash                                                                     
+                                                                                
+x=$@                                                                            
+w3m "https://duckduckgo.com/?q=${x// /+}" 
