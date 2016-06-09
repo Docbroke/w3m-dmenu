@@ -1,6 +1,8 @@
 
 #!/bin/bash                                                                                                                 
-                                                                                                                            
+# requires "w3d" for search using duckduckgo
+# to user differen terminal or browser (defaults to sakura & w3m), change the script accordingly
+
     grep -o 'http[^"]*' .w3m/bookmark.html > /tmp/bookmarks                                                                 
     grep -o 'http[^"]*' .w3m/history >> /tmp/bookmarks                                                                      
                                                                                                                             
