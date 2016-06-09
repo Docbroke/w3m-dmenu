@@ -4,3 +4,10 @@ The script is inspired from "boosta-view" --> https://github.com/okraits/boosta 
 Simply put the file w3bookmarks in your path, make it executable and bind to your preferred shortcut key.
 
 You can use rofi in place of dmenu, just change "dmenu" to "rofi -dmenu"
+
+UPDATE:
+added support for search using duckduckgo (requires another script w3d)
+added support for opening url directly
+
+Bug:
+if search term is present in bookmarks, that bookmark will be selected so search will not be possible
