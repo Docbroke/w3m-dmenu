@@ -2,11 +2,15 @@
 
     ## requires surfraw, add below to your .bashrc
     ## PATH=/usr/lib/surfraw:${PATH}
+    ## put your browser command in BROWSER=<-->, defaults to chromium
+    ## put your bookmarks & history file in appropriate place, defaults to w3m bookmarks and history file
 
     BROWSER=chromium
+    BOOKMARKS=~/.w3m/bookmark.html
+    HISTORY=~/.w3m/history
 
-    grep -o 'http[^"]*' .w3m/bookmark.html > /tmp/bookmarks
-    grep -o 'http[^"]*' .w3m/history >> /tmp/bookmarks
+    grep -o 'http[^"]*' $BOOKMARKS > /tmp/bookmarks
+    grep -o 'http[^"]*' $HISTORY >> /tmp/bookmarks
     cat /tmp/bookmarks | dmenu -p $BROWSER: > /tmp/x
 
     check=$(wc -l < /tmp/x)
