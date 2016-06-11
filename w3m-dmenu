@@ -3,6 +3,7 @@
     ## requires surfraw, w3m, sakura, dmenu/rofi aliased to dmenu
     ## add below to your .bashrc, (required to search with surfraw)
     ## PATH=/usr/lib/surfraw:${PATH}
+    ## if you use any-other terminal just replace sakura with name of your terminal
 
     grep -o 'http[^"]*' .w3m/bookmark.html > /tmp/bookmarks
     grep -o 'http[^"]*' .w3m/history >> /tmp/bookmarks
@@ -21,11 +22,11 @@
     grep -o "\.in" /tmp/x && sakura -e w3m $(< /tmp/x) && exit
     grep -o "\.org" /tmp/x && sakura -e w3m $(< /tmp/x) && exit
     grep -o "\.edu" /tmp/x && sakura -e w3m $(< /tmp/x) && exit
-....
+
+    grep -o awiki /tmp/y && sakura -e archwiki $(< /tmp/z) && exit
     grep -o wiki /tmp/y && sakura -e wikipedia $(< /tmp/z) && exit
     grep -o imdb /tmp/y && sakura -e imdb $(< /tmp/z) && exit
     grep -o aur /tmp/y && sakura -e aur $(< /tmp/z) && exit
-    grep -o aw /tmp/y && sakura -e archwiki $(< /tmp/z) && exit
     grep -o pkg /tmp/y && sakura -e archpkg $(< /tmp/z) && exit
     grep -o google /tmp/y && sakura -e google $(< /tmp/z) && exit
     grep -o dict /tmp/y && sakura -e webster $(< /tmp/z) && exit
