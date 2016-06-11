@@ -1,0 +1,35 @@
+#!/bin/bash
+
+    ## requires surfraw, add below to your .bashrc
+    ## PATH=/usr/lib/surfraw:${PATH}
+
+    BROWSER=chromium
+
+    grep -o 'http[^"]*' .w3m/bookmark.html > /tmp/bookmarks
+    grep -o 'http[^"]*' .w3m/history >> /tmp/bookmarks
+    cat /tmp/bookmarks | dmenu -p $BROWSER: > /tmp/x
+
+    check=$(wc -l < /tmp/x)
+    (( check == 0)) && exit
+
+    awk '{ print $1 }' /tmp/x > /tmp/y
+    awk '{ print $2, $3, $4, $5, $6, $7, $8 }' /tmp/x > /tmp/z
+
+    grep -o http /tmp/x && $BROWSER  $(cat /tmp/x) && exit
+    grep -o "www\." /tmp/x && $BROWSER $(cat /tmp/x) && exit
+    grep -o "\.com" /tmp/x && $BROWSER $(cat /tmp/x) && exit
+    grep -o "\.in" /tmp/x && $BROWSER $(cat /tmp/x) && exit
+    grep -o "\.org" /tmp/x && $BROWSER $(cat /tmp/x) && exit
+
+    grep -o wiki /tmp/y && wikipedia -browser=$BROWSER  $(< /tmp/z) && exit
+    grep -o imdb /tmp/y && imdb -browser=$BROWSER $(< /tmp/z) && exit
+    grep -o aur /tmp/y && aur -browser=$BROWSER $(< /tmp/z) && exit
+    grep -o aw /tmp/y && archwiki -browser=$BROWSER $(< /tmp/z) && exit
+    grep -o pkg /tmp/y && archpkg -browser=$BROWSER $(< /tmp/z) && exit
+    grep -o google /tmp/y && google -browser=$BROWSER $(< /tmp/z) && exit
+    grep -o dict /tmp/y && webster -browser=$BROWSER $(< /tmp/z) && exit
+    grep -o dictu /tmp/y && urban -browser=$BROWSER $(< /tmp/z) && exit
+    grep -o torrent /tmp/y && piratebay -browser=$BROWSER $(< /tmp/z) && exit
+    grep -o pubmed /tmp/y && pubmed -browser=$BROWSER $(< /tmp/z) && exit
+
+    S -browser=$BROWSER $(cat /tmp/x)
