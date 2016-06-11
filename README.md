@@ -1,20 +1,27 @@
-# w3m-dmenu
-This script allows using native w3m bookmarks and history using dmenu.
-The script is inspired from "boosta-view" --> https://github.com/okraits/boosta .
-Simply put the file w3bookmarks in your path, make it executable and bind to your preferred shortcut key.
+This repo contains two scripts one is specific for w3m, which is a wonderful text-mode web browser --> w3m-dmenu
+Another script will work with any-other browser, after some easy configuration (defaults to chromium) --> dmenu-browse
 
-You can use rofi in place of dmenu, just change "dmenu" to "rofi -dmenu"
+Basically this scripts provides web-search/open-url/bookmarks&histor-search functions.
+The scripts depends on surfraw for searching through specific sites;
 
-UPDATE 1:
-added support for search using duckduckgo (requires another script w3d)
-added support for opening url directly
+EXAMPLES:
 
-Bug:
-if search term is present in bookmarks, that bookmark will be selected so search will not be possible
+imdb pulp fiction --> to search for pulp fiction on imdb
 
-UPDATE 2:
-now user can specify browser usindg "dmenu-browse", or can use w3m-dmenu for using it with w3m
-now search uses surfraw
-examples, to search wikipedia for obama use "wiki obama", or search imdb for life of pie use "imdb life of pie" as search terms
-if url is used it is opened directly
-if no site is specified, default search engine in surfraw is used (duckduckgo)
+other supported terms are
+
+wiki for wikipedia
+awiki for archwiki
+aur for arch user repository
+pkg for official arch packages
+google for google
+dict for webster dictionary
+dictu for urban dictionary
+torrent for piratebay
+pubmed for pubmed
+
+Practically script can be edited to add support for any search engine supported by surfraw.
+
+By default searchs are directed to duckduckgo (as per surfraw defaults)
+
+If inplace of search term URL is provided, it will be opened directly
