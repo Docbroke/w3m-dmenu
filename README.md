@@ -13,6 +13,7 @@ Bug:
 if search term is present in bookmarks, that bookmark will be selected so search will not be possible
 
 UPDATE 2:
+now user can specify browser usindg "dmenu-search", or can use w3m-dmenu for using it with w3m
 now search uses surfraw
 examples, to search wikipedia for obama use "wiki obama", or search imdb for life of pie use "imdb life of pie" as search terms
 if url is used it is opened directly
