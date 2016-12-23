@@ -1,39 +1,57 @@
 #!/bin/bash
 
-    ## requires surfraw, add below to your .bashrc
-    ## PATH=/usr/lib/surfraw:${PATH}
-    ## put your browser command in BROWSER=<-->, defaults to chromium
-    ## put your bookmarks & history file in appropriate place, defaults to w3m bookmarks and history file
+### DEPENDS ON ###
+    # "surfraw"-for keyword based search,
+### CONFIGURATION ###
+    # place your browser in BROWSER=? line
+    ## only if not using w3m 
+	# you can use your bookmarks text file with 1 url/line, put it in second "BOOKMARKS=?" field replacing /tmp/bookmarks, comment out first "BOOKMARKS=?" line & grep -o line
+    # w3m users do not need to change BOOKMARKS=?
+    # default script uses rofi, to use dmenu uncomment the line starting with dmenu and comment out previous line starting with rofi
+### USE ###
+    # enter text in rofi/dmenu field, it will be matched against bookmarks, <enter> to open selected bookmark
+    # to search specific sites use keyword as first argument ( like go for google, wi for wikipedia, aw for archwiki etc.) > read the script to find out all keywords
+    # if no keyword or url is used, entire argument will be searched with duckduckgo
+    # url is identified with http/www/org/com/edu/in etc., for other urls use ">" as keyword elsed it will go to duckduckgo
+    # to use enterd text directly (not the matching bookmark) use <C-enter> (rofi only)
+    # to edit selected bookmark use <C-space> (rofi only)
 
-    BROWSER=chromium
-    BOOKMARKS=~/.w3m/bookmark.html
-    HISTORY=~/.w3m/history
+BROWSER=lariza
+# only for w3m bookmarks/ comment out if not using w3m
+BOOKMARKS=~/.w3m/bookmark.html
+HISTORY=~/.w3m/history
 
-    grep -o 'http[^"]*' $BOOKMARKS > /tmp/bookmarks
-    grep -o 'http[^"]*' $HISTORY >> /tmp/bookmarks
-    cat /tmp/bookmarks | dmenu -p $BROWSER: > /tmp/x
+# convert .w3m/bookmarks to simple text with 1 url/line; comment out if not using w3m
+grep -o 'http[^"]*' $BOOKMARKS > /tmp/bookmarks
+# add w3m history to the list of bookmarks
+# grep -o 'http[^"]*' $HISTORY >> /tmp/bookmarks
 
-    check=$(wc -l < /tmp/x)
-    (( check == 0)) && exit
+shopt -s lastpipe
+# add your plain text bookmarks here (do not edit or comment out if using w3m bookmarks)
+BOOKMARKS=/tmp/bookmarks
+rofi -dmenu -location 1 -l 10 -width 100 -p $BROWSER: < "$BOOKMARKS" | read url opts
+# dmenu -l 10 -p $BROWSER: < "$BOOKMARKS" | read url opts
 
-    awk '{ print $1 }' /tmp/x > /tmp/y
-    awk '{ print $2, $3, $4, $5, $6, $7, $8 }' /tmp/x > /tmp/z
+[[ ! $url ]] && exit
 
-    grep -o http /tmp/x && $BROWSER  $(cat /tmp/x) && exit
-    grep -o "www\." /tmp/x && $BROWSER $(cat /tmp/x) && exit
-    grep -o "\.com" /tmp/x && $BROWSER $(cat /tmp/x) && exit
-    grep -o "\.in" /tmp/x && $BROWSER $(cat /tmp/x) && exit
-    grep -o "\.org" /tmp/x && $BROWSER $(cat /tmp/x) && exit
-
-    grep -o awiki /tmp/y && archwiki -browser=$BROWSER $(< /tmp/z) && exit
-    grep -o wiki /tmp/y && wikipedia -browser=$BROWSER  $(< /tmp/z) && exit
-    grep -o imdb /tmp/y && imdb -browser=$BROWSER $(< /tmp/z) && exit
-    grep -o aur /tmp/y && aur -browser=$BROWSER $(< /tmp/z) && exit
-    grep -o pkg /tmp/y && archpkg -browser=$BROWSER $(< /tmp/z) && exit
-    grep -o google /tmp/y && google -browser=$BROWSER $(< /tmp/z) && exit
-    grep -o dict /tmp/y && webster -browser=$BROWSER $(< /tmp/z) && exit
-    grep -o dictu /tmp/y && urban -browser=$BROWSER $(< /tmp/z) && exit
-    grep -o torrent /tmp/y && piratebay -browser=$BROWSER $(< /tmp/z) && exit
-    grep -o pubmed /tmp/y && pubmed -browser=$BROWSER $(< /tmp/z) && exit
-
-    S -browser=$BROWSER $(cat /tmp/x)
+case $url in
+	http*)   $BROWSER $url ;;
+	\>)      $BROWSER $opts ;;
+	*www.*)  $BROWSER $url ;;
+	*.com*)  $BROWSER $url ;;
+	*.in*)   $BROWSER $url ;;
+	*.edu*)  $BROWSER $url ;;
+	*.org*)  $BROWSER $url ;;
+	aw)      archwiki    -browser=$BROWSER $opts ;;
+	wi)      wikipedia   -browser=$BROWSER $opts ;;
+	imdb)    imdb        -browser=$BROWSER $opts ;;
+	aur)     aur         -browser=$BROWSER $opts ;;
+	pkg)     archpkg     -browser=$BROWSER $opts ;;
+	google)  google      -browser=$BROWSER $opts ;;
+	yt)      youtube     -browser=$BROWSER $opts ;;
+	ebay)    ebay        -browser=$BROWSER $opts ;;
+	pubmed)  pubmed      -browser=$BROWSER $opts ;;
+	git)	 github      -browser=$BROWSER $opts ;;
+#	*)       qddg  $url $opts ;;
+	*)	 duckduckgo  -browser=$BROWSER $url $opts ;;
+esac
