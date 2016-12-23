@@ -1,2 +1,2 @@
-Read comments in w3m-browse file
+Read comments in dmenu-browse file
 I will update readme later
