@@ -35,23 +35,26 @@ rofi -dmenu -location 1 -l 10 -width 100 -p $BROWSER: < "$BOOKMARKS" | read url 
 [[ ! $url ]] && exit
 
 case $url in
-	http*)   $BROWSER $url ;;
-	\>)      $BROWSER $opts ;;
-	*www.*)  $BROWSER $url ;;
-	*.com*)  $BROWSER $url ;;
-	*.in*)   $BROWSER $url ;;
-	*.edu*)  $BROWSER $url ;;
-	*.org*)  $BROWSER $url ;;
-	aw)      archwiki    -browser=$BROWSER $opts ;;
-	wi)      wikipedia   -browser=$BROWSER $opts ;;
-	imdb)    imdb        -browser=$BROWSER $opts ;;
-	aur)     aur         -browser=$BROWSER $opts ;;
-	pkg)     archpkg     -browser=$BROWSER $opts ;;
-	google)  google      -browser=$BROWSER $opts ;;
-	yt)      youtube     -browser=$BROWSER $opts ;;
-	ebay)    ebay        -browser=$BROWSER $opts ;;
-	pubmed)  pubmed      -browser=$BROWSER $opts ;;
-	git)	 github      -browser=$BROWSER $opts ;;
-#	*)       qddg  $url $opts ;;
-	*)	 duckduckgo  -browser=$BROWSER $url $opts ;;
+    http*)   $BROWSER $url ;;
+    \>)      $BROWSER $opts ;;
+    *www.*)  $BROWSER $url ;;
+    *.com*)  $BROWSER $url ;;
+    *.in*)   $BROWSER $url ;;
+    *.edu*)  $BROWSER $url ;;
+    *.org*)  $BROWSER $url ;;
+    aw|archwiki|awiki)	archwiki    -browser=$BROWSER $opts ;;
+    wi|wiki)		wikipedia   -browser=$BROWSER $opts ;;
+    imdb)		imdb        -browser=$BROWSER $opts ;;
+    aur)		aur         -browser=$BROWSER $opts ;;
+    pkg)		archpkg     -browser=$BROWSER $opts ;;
+    go|google)		google      -browser=$BROWSER $opts ;;
+    map)		google -m   -browser=$BROWSER $opts ;;
+    image)		google -i   -browser=$BROWSER $opts ;;
+    video)		google -v   -browser=$BROWSER $opts ;;
+    news)		google -n   -browser=$BROWSER $opts ;;
+    yt|youtube)		youtube     -browser=$BROWSER $opts ;;
+    ebay)		ebay -c=in  -browser=$BROWSER $opts ;;
+    pubmed)		pubmed      -browser=$BROWSER $opts ;;
+    git|github)		github      -browser=$BROWSER $opts ;;
+    *)			duckduckgo -j -browser=$BROWSER $url $opts ;;
 esac
