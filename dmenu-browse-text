@@ -1,0 +1,63 @@
+
+#!/bin/bash
+
+### DEPENDS ON ###
+    # "surfraw"-for keyword based search, you will need /usr/lib/surfraw in your path, so add below line to your .bashrc (uncommented)
+    # PATH=/usr/lib/surfraw:${PATH}
+### CONFIGURATION ###
+    # place your text browser(w3m/lynx/links/elinks) in BROWSER=$TERM -e "your-browser" line
+    # place your terminal client(xterm, urxvt etc) in TERM="your terminal" line
+    ## only if not using w3m 
+	# you can use your bookmarks text file with 1 url/line, put it in second "BOOKMARKS=?" field replacing /tmp/bookmarks, comment out first "BOOKMARKS=?" line & grep -o line
+    # w3m users do not need to change BOOKMARKS=?
+    # default script uses rofi, to use dmenu uncomment the line starting with dmenu and comment out previous line starting with rofi
+### USE ###
+    # enter text in rofi/dmenu field, it will be matched against bookmarks, <enter> to open selected bookmark
+    # to search specific sites use keyword as first argument ( like go for google, wi for wikipedia, aw for archwiki etc.) > read the script to find out all keywords
+    # if no keyword or url is used, entire argument will be searched with duckduckgo
+    # url is identified with http/www/org/com/edu/in etc., for other urls use ">" as keyword elsed it will go to duckduckgo
+    # to use enterd text directly (not the matching bookmark) use <C-enter> (rofi only)
+    # to edit selected bookmark use <C-space> (rofi only)
+
+# only for w3m bookmarks/ comment out if not using w3m
+BOOKMARKS=~/.w3m/bookmark.html
+HISTORY=~/.w3m/history
+TERM=sakura
+BROWSER="$TERM -e w3m"
+
+# convert .w3m/bookmarks to simple text with 1 url/line; comment out if not using w3m
+grep -o 'http[^"]*' $BOOKMARKS > /tmp/bookmarks
+# add w3m history to the list of bookmarks
+# grep -o 'http[^"]*' $HISTORY >> /tmp/bookmarks
+
+shopt -s lastpipe
+# add your plain text bookmarks here (do not edit or comment out if using w3m bookmarks)
+BOOKMARKS=/tmp/bookmarks
+# use rofi to display bookmarks and select one
+rofi -dmenu -location 1 -l 10 -width 100 -p $BROWSER: < "$BOOKMARKS" | read -a url
+# use dmenu inplace of roif
+# /usr/bin/dmenu -l 10 -p $BROWSER: < "$BOOKMARKS" | read -a url
+
+[[ ! $url ]] && exit
+
+case "${url[0]}" in
+    *.*)	$BROWSER "${url[@]}" ;;
+    http://*)   $BROWSER "${url[@]}" ;;
+    aw|awiki)   $TERM -e archwiki	"${url[@]:1}" ;;
+    wi|wiki)    $TERM -e wikipedia	"${url[@]:1}" ;;
+    imdb)	$TERM -e imdb		"${url[@]:1}" ;;
+    aur)	$TERM -e aur		"${url[@]:1}" ;;
+    pkg)	$TERM -e archpkg	"${url[@]:1}" ;;
+    ddg)        $TERM -e duckduckgo -j "${url[@]:1}" ;;
+    go|google)  $TERM -e google	"${url[@]:1}" ;;
+    map)	$TERM -e google -m	"${url[@]:1}" ;;
+    image)	$TERM -e google -i	"${url[@]:1}" ;;   
+    video)	$TERM -e google -v	"${url[@]:1}" ;;   
+    news)	$TERM -e google -n	"${url[@]:1}" ;;      
+    yt|youtube)	$TERM -e youtube	"${url[@]:1}" ;;
+    ebay)	$TERM -e ebay		"${url[@]:1}" ;;
+    pubmed)	$TERM -e pubmed	"${url[@]:1}" ;;
+    git|github)	$TERM -e github	"${url[@]:1}" ;;
+    def) notify-send -t 9999999 "$( sdcv --data-dir ~/dic/english/ "${url[@]:1}" )" ;;
+    *)	      $TERM -e duckduckgo -j	"${url[@]}" ;;
+esac
