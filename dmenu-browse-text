@@ -7,7 +7,7 @@
 ### CONFIGURATION ###
     # place your text browser(w3m/lynx/links/elinks) in BROWSER=$TERM -e "your-browser" line
     # place your terminal client(xterm, urxvt etc) in TERM="your terminal" line
-    ## only if not using w3m 
+    ## only if not using w3m
 	# you can use your bookmarks text file with 1 url/line, put it in second "BOOKMARKS=?" field replacing /tmp/bookmarks, comment out first "BOOKMARKS=?" line & grep -o line
     # w3m users do not need to change BOOKMARKS=?
     # default script uses rofi, to use dmenu uncomment the line starting with dmenu and comment out previous line starting with rofi
@@ -34,15 +34,14 @@ shopt -s lastpipe
 # add your plain text bookmarks here (do not edit or comment out if using w3m bookmarks)
 BOOKMARKS=/tmp/bookmarks
 # use rofi to display bookmarks and select one
-rofi -dmenu -location 1 -l 10 -width 100 -p $BROWSER: < "$BOOKMARKS" | read -a url
+rofi -dmenu -location 1 -l 10 -width 100 -p W3M: < "$BOOKMARKS" | read -a url
 # use dmenu inplace of roif
 # /usr/bin/dmenu -l 10 -p $BROWSER: < "$BOOKMARKS" | read -a url
 
 [[ ! $url ]] && exit
 
 case "${url[0]}" in
-    *.*)	$BROWSER "${url[@]}" ;;
-    http://*)   $BROWSER "${url[@]}" ;;
+    *.*|*:*|*/*)		 $BROWSER "${url[@]}" ;;
     aw|awiki)   $TERM -e archwiki	"${url[@]:1}" ;;
     wi|wiki)    $TERM -e wikipedia	"${url[@]:1}" ;;
     imdb)	$TERM -e imdb		"${url[@]:1}" ;;
@@ -51,9 +50,9 @@ case "${url[0]}" in
     ddg)        $TERM -e duckduckgo -j "${url[@]:1}" ;;
     go|google)  $TERM -e google	"${url[@]:1}" ;;
     map)	$TERM -e google -m	"${url[@]:1}" ;;
-    image)	$TERM -e google -i	"${url[@]:1}" ;;   
-    video)	$TERM -e google -v	"${url[@]:1}" ;;   
-    news)	$TERM -e google -n	"${url[@]:1}" ;;      
+    image)	$TERM -e google -i	"${url[@]:1}" ;;
+    video)	$TERM -e google -v	"${url[@]:1}" ;;
+    news)	$TERM -e google -n	"${url[@]:1}" ;;
     yt|youtube)	$TERM -e youtube	"${url[@]:1}" ;;
     ebay)	$TERM -e ebay		"${url[@]:1}" ;;
     pubmed)	$TERM -e pubmed	"${url[@]:1}" ;;
