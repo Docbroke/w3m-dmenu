@@ -1,7 +1,9 @@
+
 #!/bin/bash
 
 ### DEPENDS ON ###
-    # "surfraw"-for keyword based search,
+    # "surfraw"-for keyword based search, you will need /usr/lib/surfraw in your path, so add below line to your .bashrc (uncommented)
+    # PATH=/usr/lib/surfraw:${PATH}
 ### CONFIGURATION ###
     # place your browser in BROWSER=? line
     ## only if not using w3m 
@@ -29,32 +31,44 @@ grep -o 'http[^"]*' $BOOKMARKS > /tmp/bookmarks
 shopt -s lastpipe
 # add your plain text bookmarks here (do not edit or comment out if using w3m bookmarks)
 BOOKMARKS=/tmp/bookmarks
-rofi -dmenu -location 1 -l 10 -width 100 -p $BROWSER: < "$BOOKMARKS" | read url opts
-# dmenu -l 10 -p $BROWSER: < "$BOOKMARKS" | read url opts
+# use rofi to display bookmarks and select one
+rofi -dmenu -location 1 -l 10 -width 100 -p $BROWSER: < "$BOOKMARKS" | read -a "url"
+# use dmenu inplace of roif
+# /usr/bin/dmenu -l 10 -p $BROWSER: < "$BOOKMARKS" | read -a url
 
 [[ ! $url ]] && exit
 
-case $url in
-    http*)   $BROWSER $url ;;
-    \>)      $BROWSER $opts ;;
-    *www.*)  $BROWSER $url ;;
-    *.com*)  $BROWSER $url ;;
-    *.in*)   $BROWSER $url ;;
-    *.edu*)  $BROWSER $url ;;
-    *.org*)  $BROWSER $url ;;
-    aw|archwiki|awiki)	archwiki    -browser=$BROWSER $opts ;;
-    wi|wiki)		wikipedia   -browser=$BROWSER $opts ;;
-    imdb)		imdb        -browser=$BROWSER $opts ;;
-    aur)		aur         -browser=$BROWSER $opts ;;
-    pkg)		archpkg     -browser=$BROWSER $opts ;;
-    go|google)		google      -browser=$BROWSER $opts ;;
-    map)		google -m   -browser=$BROWSER $opts ;;
-    image)		google -i   -browser=$BROWSER $opts ;;
-    video)		google -v   -browser=$BROWSER $opts ;;
-    news)		google -n   -browser=$BROWSER $opts ;;
-    yt|youtube)		youtube     -browser=$BROWSER $opts ;;
-    ebay)		ebay -c=in  -browser=$BROWSER $opts ;;
-    pubmed)		pubmed      -browser=$BROWSER $opts ;;
-    git|github)		github      -browser=$BROWSER $opts ;;
-    *)			duckduckgo -j -browser=$BROWSER $url $opts ;;
+duckimage() {
+x=$@
+$BROWSER "https://duckduckgo.com/?q=${x// /+}&ia=images&iax=1"
+}
+duckvideo() {
+x=$@
+$BROWSER "https://duckduckgo.com/?q=${x// /+}&ia=videos&iax=1"
+}
+DDG() {
+x=$@; $BROWSER "https://duckduckgo.com/?q=${x// /+}"
+}
+
+case "${url[0]}" in
+    *.*|*:*|*/*)		     $BROWSER "${url[@]}" ;;
+    aw|awiki)   archwiki    -browser=$BROWSER "${url[@]:1}" ;;
+    wi|wiki)    wikipedia   -browser=$BROWSER "${url[@]:1}" ;;
+    imdb)	imdb        -browser=$BROWSER "${url[@]:1}" ;;
+    aur)	aur         -browser=$BROWSER "${url[@]:1}" ;;
+    pkg)	archpkg     -browser=$BROWSER "${url[@]:1}" ;;
+    ddg)	DDG			      "${url[@]:1}" ;;
+    go|google)  google      -browser=$BROWSER "${url[@]:1}" ;;
+    map)	google -m   -browser=$BROWSER "${url[@]:1}" ;;
+#    image)	google -i   -browser=$BROWSER "${url[@]:1}" ;;   
+    image) duckimage "${url[@]:1}" ;;   
+#    video)	google -v   -browser=$BROWSER "${url[@]:1}" ;;   
+    video) duckvideo "${url[@]:1}" ;;
+    news)	google -n   -browser=$BROWSER "${url[@]:1}" ;;      
+    yt|youtube)	youtube     -browser=$BROWSER "${url[@]:1}" ;;
+    ebay)	ebay        -browser=$BROWSER "${url[@]:1}" ;;
+    pubmed)	pubmed      -browser=$BROWSER "${url[@]:1}" ;;
+    git|github)	github      -browser=$BROWSER "${url[@]:1}" ;;
+    def) notify-send -t 9999999 "$( sdcv --data-dir ~/dic/english/ "${url[@]:1}" )" ;;
+    *)	      duckduckgo -j -browser=$BROWSER "${url[@]}" ;;
 esac
