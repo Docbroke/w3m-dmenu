@@ -33,7 +33,7 @@ shopt -s lastpipe
 BOOKMARKS=/tmp/bookmarks
 # use rofi to display bookmarks and select one
 rofi -dmenu -location 1 -l 10 -width 100 -p $BROWSER: < "$BOOKMARKS" | read -a "url"
-# use dmenu inplace of roif
+# use dmenu inplace of rofi
 # /usr/bin/dmenu -l 10 -p $BROWSER: < "$BOOKMARKS" | read -a url
 
 [[ ! $url ]] && exit
