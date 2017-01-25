@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 ### DEPENDS ON ###
@@ -20,21 +19,21 @@
 
 BROWSER=lariza
 # only for w3m bookmarks/ comment out if not using w3m
-BOOKMARKS=~/.w3m/bookmark.html
+# BOOKMARKS=~/.w3m/bookmark.html
 HISTORY=~/.w3m/history
 
 # convert .w3m/bookmarks to simple text with 1 url/line; comment out if not using w3m
-grep -o 'http[^"]*' $BOOKMARKS > /tmp/bookmarks
+#grep -o 'http[^"]*' $BOOKMARKS > /tmp/bookmarks
 # add w3m history to the list of bookmarks
 # grep -o 'http[^"]*' $HISTORY >> /tmp/bookmarks
 
 shopt -s lastpipe
-# add your plain text bookmarks here (do not edit or comment out if using w3m bookmarks)
-BOOKMARKS=/tmp/bookmarks
+# add your plain text bookmarks here (do not edit or comment out if using w3m bookmarks), you can add tag after the bookmark bookmart url e.g., "www.google.co.in search googlesearch", use lariza-external-handler for adding bookmarks
+BOOKMARKS=~/.config/lariza/bookmarks
 # use rofi to display bookmarks and select one
-rofi -dmenu -location 1 -l 10 -width 100 -p $BROWSER: < "$BOOKMARKS" | read -a "url"
+rofi -dmenu -location 1 -l 10 -width 100 -font "Inconsolata 14" -p $BROWSER: < "$BOOKMARKS" | awk '{print $1}' | read -a "url"
 # use dmenu inplace of rofi
-# /usr/bin/dmenu -l 10 -p $BROWSER: < "$BOOKMARKS" | read -a url
+# /usr/bin/dmenu -l 10 -fn "Inconsolata 14" -p $BROWSER: < "$BOOKMARKS" | read -a url
 
 [[ ! $url ]] && exit
 
