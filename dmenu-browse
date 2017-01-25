@@ -30,7 +30,7 @@ shopt -s lastpipe
 # add your plain text bookmarks here (do not edit or comment out if using w3m bookmarks), you can add tag after the bookmark bookmart url e.g., "www.google.co.in search googlesearch", use lariza-external-handler for adding bookmarks
 BOOKMARKS=~/.config/lariza/bookmarks
 # use rofi to display bookmarks and select one
-rofi -dmenu -location 1 -l 10 -width 100 -font "Inconsolata 14" -p $BROWSER: < "$BOOKMARKS" | awk '{print $1}' | read -a "url"
+rofi -dmenu -location 1 -l 10 -width 100 -font "Inconsolata 14" -p $BROWSER: < "$BOOKMARKS" | read -a "url"
 # use dmenu inplace of rofi
 # /usr/bin/dmenu -l 10 -fn "Inconsolata 14" -p $BROWSER: < "$BOOKMARKS" | read -a url
 
@@ -49,7 +49,7 @@ x=$@; $BROWSER "https://duckduckgo.com/?q=${x// /+}"
 }
 
 case "${url[0]}" in
-    *.*|*:*|*/*)		     $BROWSER "${url[@]}" ;;
+    *.*|*:*|*/*)		     $BROWSER "${url[0]}" ;;
     aw|awiki)   archwiki    -browser=$BROWSER "${url[@]:1}" ;;
     wi|wiki)    wikipedia   -browser=$BROWSER "${url[@]:1}" ;;
     imdb)	imdb        -browser=$BROWSER "${url[@]:1}" ;;
