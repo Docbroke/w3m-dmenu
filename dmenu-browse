@@ -13,7 +13,6 @@
     # enter text in rofi/dmenu field, it will be matched against bookmarks, <enter> to open selected bookmark
     # to search specific sites use keyword as first argument ( like go for google, wi for wikipedia, aw for archwiki etc.) > read the script to find out all keywords
     # if no keyword or url is used, entire argument will be searched with duckduckgo
-    # url is identified with http/www/org/com/edu/in etc., for other urls use ">" as keyword elsed it will go to duckduckgo
     # to use enterd text directly (not the matching bookmark) use <C-enter> (rofi only)
     # to edit selected bookmark use <C-space> (rofi only)
 
