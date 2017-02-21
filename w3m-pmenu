@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# pmenu based bookmarks manager, using simple text bookmarks file containing 1 bookmark per line, you can have put tag after the url (with space inbetween)
+
+BROWSER=w3m
+BOOKMARKS=~/.config/lariza/bookmarks
+shopt -s lastpipe
+
+
+pmenu -p "OPEN_WITH_W3M: " < $BOOKMARSK | read -a url
+
+[[ ! $url ]] && exit
+
+case "${url[0]}" in
+    *.*|*:*|*/*)		 $BROWSER "${url[0]}" ;;
+    aw|awiki)    archwiki	"${url[@]:1}" ;;
+    wi|wiki)     wikipedia	"${url[@]:1}" ;;
+    imdb)	 imdb		"${url[@]:1}" ;;
+    aur)	 aur		"${url[@]:1}" ;;
+    pkg)	 archpkg	"${url[@]:1}" ;;
+    ddg)         duckduckgo -j "${url[@]:1}" ;;
+    go|google)   google	"${url[@]:1}" ;;
+    map)	 google -m	"${url[@]:1}" ;;
+    image)	 google -i	"${url[@]:1}" ;;
+    video)	 google -v	"${url[@]:1}" ;;
+    news)	 google -n	"${url[@]:1}" ;;
+    yt|youtube)	 youtube	"${url[@]:1}" ;;
+    ebay)	 ebay		"${url[@]:1}" ;;
+    pubmed)	 pubmed	"${url[@]:1}" ;;
+    git|github)	 github	"${url[@]:1}" ;;
+    def) notify-send -t 9999999 "$( sdcv --data-dir ~/dic/english/ "${url[@]:1}" )" ;;
+    *)	       duckduckgo -j	"${url[@]}" ;;
+esac
