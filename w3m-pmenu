@@ -7,7 +7,7 @@ BOOKMARKS=~/.config/lariza/bookmarks
 shopt -s lastpipe
 
 
-pmenu -p "OPEN_WITH_W3M: " < $BOOKMARSK | read -a url
+pmenu -p "OPEN_WITH_W3M: " < $BOOKMARKS | read -a url
 
 [[ ! $url ]] && exit
 
