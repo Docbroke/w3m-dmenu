@@ -29,6 +29,8 @@ HISTORY=~/.w3m/history
 shopt -s lastpipe
 # add your plain text bookmarks here (do not edit or comment out if using w3m bookmarks), you can add tag after the bookmark bookmart url e.g., "www.google.co.in search googlesearch", use lariza-external-handler for adding bookmarks
 BOOKMARKS=~/.config/lariza/bookmarks
+# if using w3m bookmarks
+#BOOKMARKS=/tmp/bookmarks
 # use rofi to display bookmarks and select one
 rofi -dmenu -location 1 -l 10 -width 100 -font "Inconsolata 14" -p $BROWSER: < "$BOOKMARKS" | read -a "url"
 # use dmenu inplace of rofi
