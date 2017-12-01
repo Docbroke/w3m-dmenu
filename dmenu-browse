@@ -1,40 +1,40 @@
 #!/bin/bash
 
+INFO() {
+    cat <<EOF>&2
 ### DEPENDS ON ###
-    # "surfraw"-for keyword based search, you will need /usr/lib/surfraw in your path, so add below line to your .bashrc (uncommented)
-    # PATH=/usr/lib/surfraw:${PATH}
+     "surfraw"-for keyword based search, you will need /usr/lib/surfraw in your path, so add below line to your .bashrc (uncommented)
+     PATH=/usr/lib/surfraw:${PATH}
 ### CONFIGURATION ###
-    # place your browser in BROWSER=? line
-    ## only if not using w3m 
-	# you can use your bookmarks text file with 1 url/line, put it in second "BOOKMARKS=?" field replacing /tmp/bookmarks, comment out first "BOOKMARKS=?" line & grep -o line
-    # w3m users do not need to change BOOKMARKS=?
-    # default script uses rofi, to use dmenu uncomment the line starting with dmenu and comment out previous line starting with rofi
+     place your browser in BROWSER=? line
+     place your bookmarks text file, in "BOOKMARKS=?" field, format for bookmarks is "$url $tag" per line
+     default script uses rofi, to use dmenu uncomment the line starting with dmenu and comment out previous line starting with rofi
 ### USE ###
-    # enter text in rofi/dmenu field, it will be matched against bookmarks, <enter> to open selected bookmark
-    # to search specific sites use keyword as first argument ( like go for google, wi for wikipedia, aw for archwiki etc.) > read the script to find out all keywords
-    # if no keyword or url is used, entire argument will be searched with duckduckgo
-    # to use enterd text directly (not the matching bookmark) use <C-enter> (rofi only)
-    # to edit selected bookmark use <C-space> (rofi only)
+     enter text in rofi/dmenu field, it will be matched against bookmarks, <enter> to open selected bookmark
+     to search specific sites use keyword as first argument ( like go for google, wi for wikipedia, aw for archwiki etc.) > read the script to find out all keywords
+     to find out route from delhi to mumbai with google map, "map delhi mumbai", or use "map delhi" for map of delhi
+     if no keyword or url is used, entire argument will be searched with duckduckgo
+     to use enterd text directly (not the matching bookmark) use <C-enter> (rofi only)
+     to edit selected bookmark use <C-space> (rofi only)
+     To use dictionary function (keywords def/guj/hin,) you will need sdcv installed and setup, with matching data-directory
+EOF
+}
 
-BROWSER=lariza
-# only for w3m bookmarks/ comment out if not using w3m
-# BOOKMARKS=~/.w3m/bookmark.html
-HISTORY=~/.w3m/history
-
-# convert .w3m/bookmarks to simple text with 1 url/line; comment out if not using w3m
-#grep -o 'http[^"]*' $BOOKMARKS > /tmp/bookmarks
-# add w3m history to the list of bookmarks
-# grep -o 'http[^"]*' $HISTORY >> /tmp/bookmarks
+while getopts h: help; do
+    case $help in
+    h|\?) INFO && exit ;;
+esac
+done
 
 shopt -s lastpipe
-# add your plain text bookmarks here (do not edit or comment out if using w3m bookmarks), you can add tag after the bookmark bookmart url e.g., "www.google.co.in search googlesearch", use lariza-external-handler for adding bookmarks
-BOOKMARKS=~/.config/lariza/bookmarks
-# if using w3m bookmarks
-#BOOKMARKS=/tmp/bookmarks
+
+BROWSER=vimb
+BOOKMARKS=~/.config/vimb/bookmark
+
 # use rofi to display bookmarks and select one
 rofi -dmenu -location 1 -l 10 -width 100 -font "Inconsolata 14" -p $BROWSER: < "$BOOKMARKS" | read -a "url"
 # use dmenu inplace of rofi
-# /usr/bin/dmenu -l 10 -fn "Inconsolata 14" -p $BROWSER: < "$BOOKMARKS" | read -a url
+#/usr/bin/dmenu -l 10 -fn "Inconsolata 14" -p $BROWSER: < "$BOOKMARKS" | read -a url
 
 [[ ! $url ]] && exit
 
@@ -49,7 +49,12 @@ $BROWSER "https://duckduckgo.com/?q=${x// /+}&ia=videos&iax=1"
 DDG() {
 x=$@; $BROWSER "https://duckduckgo.com/?q=${x// /+}"
 }
-
+MED() {
+x=$@; $BROWSER "http://medical-dictionary.thefreedictionary.com/${x// /+}"
+}
+MAP() {
+$BROWSER "https://maps.google.com/maps?saddr=$1&daddr=$2"
+}
 case "${url[0]}" in
     *.*|*:*|*/*)		     $BROWSER "${url[0]}" ;;
     aw|awiki)   archwiki    -browser=$BROWSER "${url[@]:1}" ;;
@@ -57,9 +62,10 @@ case "${url[0]}" in
     imdb)	imdb        -browser=$BROWSER "${url[@]:1}" ;;
     aur)	aur         -browser=$BROWSER "${url[@]:1}" ;;
     pkg)	archpkg     -browser=$BROWSER "${url[@]:1}" ;;
-    ddg)	DDG			      "${url[@]:1}" ;;
+    ddg|S|DDG)	DDG			      "${url[@]:1}" ;;
     go|google)  google      -browser=$BROWSER "${url[@]:1}" ;;
-    map)	google -m   -browser=$BROWSER "${url[@]:1}" ;;
+    map)	MAP "${url[@]:1}" "${url[@]:2}" ;; 
+    #google -m   -browser=$BROWSER "${url[@]:1}" ;;
 #    image)	google -i   -browser=$BROWSER "${url[@]:1}" ;;   
     image) duckimage "${url[@]:1}" ;;   
 #    video)	google -v   -browser=$BROWSER "${url[@]:1}" ;;   
@@ -69,6 +75,13 @@ case "${url[0]}" in
     ebay)	ebay        -browser=$BROWSER "${url[@]:1}" ;;
     pubmed)	pubmed      -browser=$BROWSER "${url[@]:1}" ;;
     git|github)	github      -browser=$BROWSER "${url[@]:1}" ;;
-    def) notify-send -t 9999999 "$( sdcv --data-dir ~/dic/english/ "${url[@]:1}" )" ;;
-    *)	      duckduckgo -j -browser=$BROWSER "${url[@]}" ;;
+    def) notify-send "$( sdcv --data-dir ~/dic/english/ "${url[@]:1}" )" && exit ;;
+    guj) notify-send "$( sdcv --data-dir ~/dic/gujarati/ "${url[@]:1}" )" && exit ;;
+    hin) notify-send "$( sdcv --data-dir ~/dic/hindi/ "${url[@]:1}" )" && exit ;;
+    med)        MED                           "${url[@]:1}" ;;
+    *)	if [[ $BROWSER != dillo ]]; then
+	        duckduckgo -j -browser=$BROWSER "${url[@]}"
+	    else
+	        google -browser=$BROWSER "${url[@]}"
+	    fi ;;
 esac
